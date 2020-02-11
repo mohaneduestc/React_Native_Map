@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text,StyleSheet } from 'react-native';
 import MapView,{PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-
+import Geolocation from '@react-native-community/geolocation';
 
 class MapScreen extends Component {
   state={
@@ -10,19 +10,19 @@ class MapScreen extends Component {
     error: null
   }
 
-  // componentDidMount(){
-  //   navigator.geolocation.getCurrentPosition(
-  //     position =>{
-  //       this.setState({
-  //         latitude: position.coords.latitude,
-  //         longitude: position.coords.longitude,
-  //         error: null
-  //       });
-  //     },
-  //     error => this.setState({ error: error.message}),
-  //     {enableHighAccuracy: true, timeout: 20000, maximumAge: 2000}
-  //   );
-  // }
+  componentDidMount(){
+    this.clearWatchId = Geolocation.getCurrentPosition(info => 
+        this.setState({
+                  latitude: info.coords.latitude,
+                  longitude: info.coords.longitude,
+                })
+    )
+
+  }
+
+  componentWilUnmount(){
+    Geolocation.clearWatch(this.clearWatchId)
+  }
   
   render() {
     return (
@@ -31,12 +31,13 @@ class MapScreen extends Component {
         provider={PROVIDER_GOOGLE}
         style={styles.flex}
       initialRegion={{
-        latitude: 37.78825,
-        longitude: -122.4324,
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }}
       showsUserLocation={true}
+      followsUserLocation // not work in android
     />
     
     {/* <Marker coordinate={this.state} /> */}

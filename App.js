@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, PermissionsAndroid, Platform } from 'react-native';
+import { View, Text, PermissionsAndroid, Platform, StyleSheet } from 'react-native';
 import MapScreen from './src/MapScreen';
 import {requestLocationPermission} from './src/expotedFunctions/index' 
+import PlaceScreen from './src/components/PlaceScreen';
+
+
 
 class App extends Component {
 
@@ -12,15 +15,26 @@ class App extends Component {
     }
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     await requestLocationPermission()
 }
 
   
 
   render() {
-      return <MapScreen />;
+      return (
+        <View style={styles.flex}>
+          <MapScreen />
+          <PlaceScreen />
+        </View>
+      )
   }
 }
+
+const styles = StyleSheet.create({
+  flex: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
 
 export default App;
